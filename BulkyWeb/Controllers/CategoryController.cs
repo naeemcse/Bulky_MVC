@@ -34,6 +34,7 @@ namespace BulkyWeb.Controllers
             {
             _db.Categories.Add(obj);
             _db.SaveChanges();
+                TempData["success"] = "Category is created Successfully";
             return RedirectToAction("Index");
             }
             return View(obj);
@@ -62,17 +63,22 @@ namespace BulkyWeb.Controllers
         [HttpPost]
         public IActionResult Edit(Category obj)
         {
-           
-            var categoryFromDb = _db.Categories.FirstOrDefault(c => c.CategoryId == obj.CategoryId);
-            if (categoryFromDb != null)
+           var categoryFromDb = _db.Categories.FirstOrDefault(c => c.CategoryId == obj.CategoryId);
+             /*    if (categoryFromDb != null)
+              {
+                  categoryFromDb.Name = obj.Name;
+                  categoryFromDb.DisplayOrder = obj.DisplayOrder;
+                  _db.Entry(categoryFromDb).State = EntityState.Modified;
+                  _db.SaveChanges();
+                   return RedirectToAction("Index");
+              }*/
+            if (ModelState.IsValid)
             {
-                categoryFromDb.Name = obj.Name;
-                categoryFromDb.DisplayOrder = obj.DisplayOrder;
-                _db.Entry(categoryFromDb).State = EntityState.Modified;
+                _db.Categories.Update(obj);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View();
+            return View(obj);
         }
 
         // Delete 
@@ -99,7 +105,9 @@ namespace BulkyWeb.Controllers
 
             _db.Categories.Remove(obj);
                 _db.SaveChanges();
-                return RedirectToAction("Index");
+            TempData["success"] = "Category is deleted Successfully";
+
+            return RedirectToAction("Index");
             }
           
                
